@@ -1,5 +1,5 @@
 # MSiA423 Template Repository
-Name: Zixiao Huang
+Name: Zixiao Huang\
 QA Name: Lanqi Fei
 
 <!-- toc -->
