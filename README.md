@@ -18,6 +18,7 @@ Since the app utilizes a clustering algorithm, it might not make much sense to s
 #### 2. Business Metrics
 For business purpose, an important metric is definitely the number of users who visit the web app. In addition, it might also be a good idea to ask about users' opinions on the recommendations. By evaluating the level of user satisfaction, we could get a better idea of how the web app is performing. A higher level of user satisfaction is likely to generate more profit and revenue, while a lower level indicates the potential flaw in the app and failure.
 
+## Project Overview
 <!-- toc -->
 
 - [Directory structure](#directory-structure)
