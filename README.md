@@ -1,6 +1,22 @@
-# MSiA423 Template Repository
-Name: Zixiao Huang\
-QA Name: Lanqi Fei
+# MSiA 423 Spotify Song Recommender System
+Project Creator and Developer: Zixiao Huang\
+(QA contributions: Lanqi Fei)
+
+## Project Charter
+### Vision
+Listening to music is an important pastime and a relief from the strenuous work in our everyday life. Yet, with the large amount of songs, people might find it very difficult to find new songs to listen to when they are getting tired of the old songs. This app helps the audience by providing them some top songs based on their previous preferences. With the assistance of this app, people will be able to avoid spending excess amount of time on researching and deciding the song to listen to. 
+
+### Mission
+To use the web app, the user will input the title of a song which they enjoyed previously. The user could also specify the number of songs n they want to be recommended. Based on the information which the user entered, the app would then displays the most similar n songs based on clustering algorithms and features such as acousticness and danceability. The data of this project is the [Spotify Dataset 1921-2020, 160k+ Tracks](https://www.kaggle.com/yamaerenay/spotify-dataset-19212020-160k-tracks). 
+
+For example, suppose a user is eager to find two songs that are similar to "Bohemian Rhapsody" by the British rock band Queen. The app would then find the two songs which are in the same cluster as "Bohemian Rhapsody" with the smallest distances. Let's say that the top two results returned from the app are "We Will Rock You" by Queen and "Dancing Queen" by the Swedish group ABBA. If the user is not familiar with ABBA before, based on the result of the app, it might prompt him to explore more on this new group and start enjoying it. 
+
+### Success Criteria
+#### 1. Machine Learning Metrics
+Since the app utilizes a clustering algorithm, it might not make much sense to set a hard threshold to evaluate the overall performance of the recommendation. Instead, we will rely on the reduction in MSE as well as the average silhouette score to determine the numebr of clusters. An optimal silhouette score should probably be larger than 0.5.
+
+#### 2. Business Metrics
+For business purpose, an important metric is definitely the number of users who visit the web app. In addition, it might also be a good idea to ask about users' opinions on the recommendations. By evaluating the level of user satisfaction, we could get a better idea of how the web app is performing. A higher level of user satisfaction is likely to generate more profit and revenue, while a lower level indicates the potential flaw in the app and failure.
 
 <!-- toc -->
 
