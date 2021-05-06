@@ -12,17 +12,30 @@ logger.setLevel("INFO")
 Base = declarative_base()
 
 
-class Tracks(Base):
+class Songs(Base):
     """Create a data model for the database to be set up for capturing songs
 
     """
 
-    __tablename__ = 'tracks'
+    __tablename__ = 'songs'
 
     id = Column(Integer, primary_key=True)
     title = Column(String(100), unique=False, nullable=False)
     artist = Column(String(100), unique=False, nullable=False)
-    album = Column(String(100), unique=False, nullable=True)
+    year = Column(Integer, unique=False, nullable=False)
+    acousticness = Column(Float, unique=False, nullable=False)
+    danceability = Column(Float, unique=False, nullable=False)
+    duration_ms = Column(Integer, unique=False, nullable=False)
+    energy = Column(Float, unique=False, nullable=False)
+    instrumental = Column(Float, unique=False, nullable=False)
+    liveness = Column(Float, unique=False, nullable=False)
+    loudness = Column(Float, unique=False, nullable=False)
+    key = Column(Integer, unique=False, nullable=False)
+    mode = Column(Integer, unique=False, nullable=False)
+    popularity = Column(Integer, unique=False, nullable=False)
+    speechiness = Column(Float, unique=False, nullable=False)
+    tempo = Column(Float, unique=False, nullable=False)
+    valence = Column(Float, unique=False, nullable=False)
 
     def __repr__(self):
         return '<Track %r>' % self.title
@@ -43,7 +56,7 @@ def create_db(engine_string: str) -> None:
     logger.info("Database created.")
 
 
-class TrackManager:
+class SongManager:
 
     def __init__(self, app=None, engine_string=None):
         """
@@ -69,20 +82,39 @@ class TrackManager:
         """
         self.session.close()
 
-    def add_track(self, title: str, artist: str, album: str) -> None:
+    def add_song(self, title: str, artist: str, year: int, acousticness: float,
+                  danceability: float, duration_ms: int, energy: float, instrumental: float,
+                  liveness: float, loudness: float, key: int, mode: int, popularity: int,
+                  speechiness: float, tempo: float, valence: float) -> None:
         """Seeds an existing database with additional songs.
 
         Args:
             title: str - Title of song
             artist: str - Artist
-            album: str - Album title
+            acousticness - Acousticness level of the song (Ranges from 0 to 1)
+            danceability - Danceability level of the song (Ranges from 0 to 1)
+            duration_ms - Duration of the song
+            energy - Energy level of the song (Ranges from 0 to 1)
+            instrumental - Instrumental level of the song (Ranges from 0 to 1)
+            Liveness - Liveness of the song (Ranges from 0 to 1)
+            Loudness - Loudness level of the song (Float typically ranging from -60 to 0)
+            Key - Key of the song (Integer from 0 to 11, starting on C as 0, C# as 1 and so on)
+            Mode - Mode of the song (Minor as 0, Major as 1)
+            Popularity - Popularity level of the song (Integer ranges from 0 to 100)
+            Speechiness - Speechiness of the song (Ranges from 0 to 1)
+            Tempo - Tempo of the song (Float typically ranging from 50 to 150)
+            Valence - Valence of the song (Ranges from 0 to 1)
 
         Returns:None
 
         """
 
         session = self.session
-        track = Tracks(artist=artist, album=album, title=title)
+        track = Songs(artist=artist, title=title, year=year, acousticness=acousticness,
+                       danceability=danceability, duration_ms=duration_ms, energy=energy,
+                       instrumental=instrumental, liveness=liveness, loudness=loudness,
+                       key=key, mode=mode, popularity=popularity, speechiness=speechiness,
+                       tempo=tempo, valence=valence)
         session.add(track)
         session.commit()
-        logger.info("%s by %s from album, %s, added to database", title, artist, album)
+        logger.info("%s by %s added to database", title, artist)

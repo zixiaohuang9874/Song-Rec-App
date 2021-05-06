@@ -16,14 +16,14 @@ logger = logging.getLogger(app.config["APP_NAME"])
 logger.debug('Web app log')
 
 # Initialize the database session
-from src.add_songs import Tracks, TrackManager
-track_manager = TrackManager(app)
+from src.add_songs import Songs, SongManager
+song_manager = SongManager(app)
 
 @app.route('/')
 def index():
     """Main view that lists songs in the database.
 
-    Create view into index page that uses data queried from Track database and
+    Create view into index page that uses data queried from Song database and
     inserts it into the msiapp/templates/index.html template.
 
     Returns: rendered html template
@@ -31,12 +31,12 @@ def index():
     """
 
     try:
-        tracks = track_manager.session.query(Tracks).limit(app.config["MAX_ROWS_SHOW"]).all()
+        songs = song_manager.session.query(Songs).limit(app.config["MAX_ROWS_SHOW"]).all()
         logger.debug("Index page accessed")
-        return render_template('index.html', tracks=tracks)
+        return render_template('index.html', songs=songs)
     except:
         traceback.print_exc()
-        logger.warning("Not able to display tracks, error page returned")
+        logger.warning("Not able to display songs, error page returned")
         return render_template('error.html')
 
 
@@ -48,11 +48,18 @@ def add_entry():
     """
 
     try:
-        track_manager.add_track(artist=request.form['artist'], album=request.form['album'], title=request.form['title'])
+        song_manager.add_song(artist=request.form['artist'], title=request.form['title'],
+                              year=request.form['year'], acousticness=request.form['acousticness'],
+                              danceability=request.form['danceability'], duration_ms=request.form['duraion_ms'],
+                              energy=request.form['energy'], instrumental=request.form['instrumental'],
+                              liveness=request.form['liveness'], loudness=request.form['loudness'],
+                              key=request.form['key'], mode=request.form['mode'], popularity=request.form['popularity'],
+                              speechiness=request.form['speechiness'], tempo=request.form['tempo'],
+                              valence=request.form['valence'])
         logger.info("New song added: %s by %s", request.form['title'], request.form['artist'])
         return redirect(url_for('index'))
     except:
-        logger.warning("Not able to display tracks, error page returned")
+        logger.warning("Not able to display songs, error page returned")
         return render_template('error.html')
 
 
