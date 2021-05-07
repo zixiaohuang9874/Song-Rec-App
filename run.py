@@ -2,7 +2,7 @@ import argparse
 
 import logging.config
 logging.config.fileConfig('config/logging/local.conf')
-logger = logging.getLogger('penny-lane-pipeline')
+logger = logging.getLogger('spotify-pipeline')
 
 from src.add_songs import SongManager, create_db
 from config.flaskconfig import SQLALCHEMY_DATABASE_URI

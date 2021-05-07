@@ -2,7 +2,7 @@ import logging.config
 
 import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, MetaData
+from sqlalchemy import Column, Integer, String, Float, MetaData
 from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
 
@@ -91,19 +91,20 @@ class SongManager:
         Args:
             title: str - Title of song
             artist: str - Artist
-            acousticness - Acousticness level of the song (Ranges from 0 to 1)
-            danceability - Danceability level of the song (Ranges from 0 to 1)
-            duration_ms - Duration of the song
-            energy - Energy level of the song (Ranges from 0 to 1)
-            instrumental - Instrumental level of the song (Ranges from 0 to 1)
-            Liveness - Liveness of the song (Ranges from 0 to 1)
-            Loudness - Loudness level of the song (Float typically ranging from -60 to 0)
-            Key - Key of the song (Integer from 0 to 11, starting on C as 0, C# as 1 and so on)
-            Mode - Mode of the song (Minor as 0, Major as 1)
-            Popularity - Popularity level of the song (Integer ranges from 0 to 100)
-            Speechiness - Speechiness of the song (Ranges from 0 to 1)
-            Tempo - Tempo of the song (Float typically ranging from 50 to 150)
-            Valence - Valence of the song (Ranges from 0 to 1)
+            year: int - Year of the song published
+            acousticness: float - Acousticness level of the song (Ranges from 0 to 1)
+            danceability: float -Danceability level of the song (Ranges from 0 to 1)
+            duration_ms: int - Duration of the song
+            energy: float - Energy level of the song (Ranges from 0 to 1)
+            instrumental: float - Instrumental level of the song (Ranges from 0 to 1)
+            Liveness: float - Liveness of the song (Ranges from 0 to 1)
+            Loudness: flaot - Loudness level of the song (Float typically ranging from -60 to 0)
+            Key: int - Key of the song (Integer from 0 to 11, starting on C as 0, C# as 1 and so on)
+            Mode: int - Mode of the song (Minor as 0, Major as 1)
+            Popularity: int - Popularity level of the song (Integer ranges from 0 to 100)
+            Speechiness: float - Speechiness of the song (Ranges from 0 to 1)
+            Tempo: float - Tempo of the song (Float typically ranging from 50 to 150)
+            Valence: float - Valence of the song (Ranges from 0 to 1)
 
         Returns:None
 
