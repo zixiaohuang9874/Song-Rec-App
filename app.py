@@ -3,6 +3,8 @@ import logging.config
 from flask import Flask
 from flask import render_template, request, redirect, url_for
 
+from src.add_songs import Songs, SongManager
+
 # Initialize the Flask application
 app = Flask(__name__, template_folder="app/templates", static_folder="app/static")
 
@@ -16,7 +18,6 @@ logger = logging.getLogger(app.config["APP_NAME"])
 logger.debug('Web app log')
 
 # Initialize the database session
-from src.add_songs import Songs, SongManager
 song_manager = SongManager(app)
 
 @app.route('/')
