@@ -196,7 +196,7 @@ docker run -it --rm \
     -p$MYSQL_PASSWORD \
 ```
 
-After entering the database, to view the table created, use the following commands in this order: `USE msia423_db;`, `DESCRIBE movies;`.
+After entering the database, to view the table created, use the following commands in this order: `USE msia423_db;`, `DESCRIBE songs;`.
 This will display the schema of the created table. 
 
 ##### 1.5.2 Creating a database
