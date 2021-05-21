@@ -1,14 +1,14 @@
 import os
 import logging.config
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
 import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float, MetaData
 from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
-
-logger = logging.getLogger(__name__)
-logger.setLevel("INFO")
 
 Base = declarative_base()
 
@@ -39,7 +39,7 @@ class Songs(Base):
     valence = Column(Float, unique=False, nullable=False)
 
     def __repr__(self):
-        return '<Track %r>' % self.title
+        return '<Song %r>' % self.title
 
 
 def create_db(engine_string: str) -> None:

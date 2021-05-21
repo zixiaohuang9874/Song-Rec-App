@@ -101,23 +101,24 @@ the docker image from the root of the repository.
 To begin with, two environment variables, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` need to be ready and setup in
 order to run the following commands. In addition, to upload the file to s3 and download the file from s3, your local data path
 and s3 data path could be specified by using `--local_path` and `--s3path` in the commands. If not specified, the default
-`local path` is `data/sample/data.csv` and the default `s3_path` is `s3://2021-msia423-huang-zixiao/raw/data.csv`.
+`local path` is `data/sample/data.csv` and the default `s3_path` is `s3://2021-msia423-huang-zixiao/raw/data.csv`. Note that for
+the `s3_path`, you might want to specify your own S3 bucket path in order to make the commands below work successfully.
 
 ##### 1.3.1 Upload data to S3
 The following will upload the file, `data/sample/data.csv` to your bucket, assuming that you have environment variables,
 `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, set in your environment.
 
-`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY spotify_data s3.py --local_path={Your_local_path} --s3path={Your_s3_path}`
+`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY spotify_data src/s3.py --upload --local_path={Your_local_path} --s3path={Your_s3_path}`
 
 If not using the docker, you can also run the following command:
 
-`python3 src/s3.py --local_path={Your_local_path} --s3_path={Your_s3_path}` 
+`python3 src/s3.py --upload --local_path={Your_local_path} --s3_path={Your_s3_path}` 
 
 ##### 1.3.2 Download data from S3
 The following will download the data file from your bucket, assuming that you have environment variables,
 `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, set in your environment.
 
-`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY spotify_data s3.py --local_path={Your_local_path} --s3path={Your_s3_path}`
+`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY spotify_data src/s3.py --download --local_path={Your_local_path} --s3path={Your_s3_path}`
 
 If not using the docker, you can also run the following command:
 
@@ -128,7 +129,8 @@ To create the database in the location configured in `config.py` run:
 
 `python run.py create_db --engine_string=<engine_string>`
 
-By default, `python run.py create_db` creates a database at `sqlite:///data/songs.db`， if RDS database connection info is not provided.
+By default, `python run.py create_db` creates a database at `sqlite:///data/songs.db`， if RDS database connection info is not provided. It
+is suggested that the user specifies the `--engine_string` explicitly in the command and not using the default one.
 
 You can also use docker to create the database in a local SQLite repo. The following command will finish the task:
 
@@ -193,7 +195,7 @@ docker run -it --rm \
     mysql \
     -h$MYSQL_HOST \
     -u$MYSQL_USER \
-    -p$MYSQL_PASSWORD \
+    -p$MYSQL_PASSWORD
 ```
 
 After entering the database, to view the table created, use the following commands in this order: `USE msia423_db;`, `DESCRIBE songs;`.
