@@ -108,21 +108,21 @@ the `s3_path`, you might want to specify your own S3 bucket path in order to mak
 The following will upload the file, `data/sample/data.csv` to your bucket, assuming that you have environment variables,
 `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, set in your environment.
 
-`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY spotify_data src/s3.py --upload --local_path={Your_local_path} --s3path={Your_s3_path}`
+`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY spotify_data run.py s3 --upload --local_path={Your_local_path} --s3path={Your_s3_path}`
 
 If not using the docker, you can also run the following command:
 
-`python3 src/s3.py --upload --local_path={Your_local_path} --s3_path={Your_s3_path}` 
+`python3 run.py s3 --upload --local_path={Your_local_path} --s3_path={Your_s3_path}` 
 
 ##### 1.3.2 Download data from S3
 The following will download the data file from your bucket, assuming that you have environment variables,
 `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, set in your environment.
 
-`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY spotify_data src/s3.py --download --local_path={Your_local_path} --s3path={Your_s3_path}`
+`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY spotify_data run.py s3 --download --local_path={Your_local_path} --s3path={Your_s3_path}`
 
 If not using the docker, you can also run the following command:
 
-`python3 src/s3.py --download --local_path={Your_local_path} --s3_path={Your_s3_path}` 
+`python3 run.py s3 --download --local_path={Your_local_path} --s3_path={Your_s3_path}` 
 
 #### 1.4 Local Database Setup
 To create the database in the location configured in `config.py` run: 
@@ -143,12 +143,10 @@ Another way is to set up `SQLALCHEMY_DATABASE_URI` as an environment variable, t
 ##### 1.4.1 Adding songs 
 To add songs to the database:
 
-`python run.py ingest --engine_string=<engine_string> --title=<TITLE> --artist=<ARTIST> --year=<YEAR>
---acousticness=<ACOUSTICNESS> --danceability=<DANCEABILITY> --duration_ms=<DURATION_MS> --energy=<ENERGY>
---instrumental=<INSTRUMENTAL> --liveness=<LIVENESS> --loudness=<LOUDNESS> --key=<KEY> --mode=<MODE>
---popularity=<POPULARITY> --speechiness=<SPEECHINESS> --temp=<TEMPO> --valence=<VALENCE>`
+`python run.py ingest --engine_string=<engine_string> --songTitle=<SONGTITLE> --artist=<ARTIST> --rank=<RANK>
+ --recommendedSong=<RECOMMENDEDSONG> --recommendedSongArtist=<RECOMMENDEDSONGARTIST>  --duration_ms=<DURATION_MS>`
 
-By default, `python run.py ingest` adds *Keep A Song In Your Soul* by Mamie Smith to the SQLite database located in `sqlite:///data/songs.db`.
+By default, `python run.py ingest` adds *Someone Like You* by Adele to the SQLite database located in `sqlite:///data/songs.db`.
 
 ##### 1.4.2 Defining your engine string 
 A SQLAlchemy database connection is defined by a string with the following format:
@@ -182,7 +180,7 @@ Northwestern VPN is required in order to connect ot the database. Lastly, five e
 MYSQL_USER:
 MYSQL_PASSWORD:
 MYSQL_PORT: 3306
-DATABASE_NAME: msia_423_db
+DATABASE_NAME: msia423_db
 MYSQL_HOST: nw-msia423-zixiao.cpfwga9vubbx.us-east-2.rds.amazonaws.com
 ```
 
@@ -222,9 +220,8 @@ docker run -it \
     -e MYSQL_HOST \
     -e MYSQL_PORT \
     -e DATABASE_NAME \
-    spotify_data run.py ingest --engine_string={YOUR_ENGINE_STRING} --title=<TITLE> --artist=<ARTIST> --year=<YEAR>--acousticness=<ACOUSTICNESS> \
-    --danceability=<DANCEABILITY> --duration_ms=<DURATION_MS> --energy=<ENERGY> --instrumental=<INSTRUMENTAL> --liveness=<LIVENESS> --loudness=<LOUDNESS> \ 
-    --key=<KEY> --mode=<MODE> --popularity=<POPULARITY> --speechiness=<SPEECHINESS> --temp=<TEMPO> --valence=<VALENCE>
+    spotify_data run.py ingest --engine_string={YOUR_ENGINE_STRING} --songTitle=<SONGTITLE> --artist=<ARTIST> --rank=<RANK>
+    --recommendedSong=<RECOMMENDEDSONG> --recommendedSongArtist=<RECOMMENDEDSONGARTIST>  --duration_ms=<DURATION_MS>
 ```
 
 

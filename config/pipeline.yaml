@@ -1,0 +1,17 @@
+preprocess:
+    clean:
+        columns_to_clean: [artists]
+    standardize:
+        columns_to_standardize: [acousticness, danceability, energy, instrumentalness, liveness,
+            loudness, speechiness, tempo, valence]
+model:
+    model:
+        features: [acousticness, danceability, energy, instrumentalness, liveness,
+            loudness, speechiness, tempo, valence]
+        numClusters: 8
+        seed: 10
+recommendation:
+    recommendation:
+        column_names: [acousticness, danceability, energy, instrumentalness, liveness,
+            loudness, speechiness, tempo, valence]
+        k: 10

@@ -1,12 +1,10 @@
-import os
-import logging.config
+import logging
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Float, MetaData
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
 
@@ -21,25 +19,15 @@ class Songs(Base):
     __tablename__ = 'songs'
 
     id = Column(Integer, primary_key=True)
-    title = Column(String(100), unique=False, nullable=False)
+    songTitle = Column(String(100), unique=False, nullable=False)
     artist = Column(String(100), unique=False, nullable=False)
-    year = Column(Integer, unique=False, nullable=False)
-    acousticness = Column(Float, unique=False, nullable=False)
-    danceability = Column(Float, unique=False, nullable=False)
+    rank = Column(Integer, unique=False, nullable=False)
+    recommendedSong = Column(String(100), unique=False, nullable=False)
+    recommendedSongArtist = Column(String(100), unique=False, nullable=False)
     duration_ms = Column(Integer, unique=False, nullable=False)
-    energy = Column(Float, unique=False, nullable=False)
-    instrumental = Column(Float, unique=False, nullable=False)
-    liveness = Column(Float, unique=False, nullable=False)
-    loudness = Column(Float, unique=False, nullable=False)
-    key = Column(Integer, unique=False, nullable=False)
-    mode = Column(Integer, unique=False, nullable=False)
-    popularity = Column(Integer, unique=False, nullable=False)
-    speechiness = Column(Float, unique=False, nullable=False)
-    tempo = Column(Float, unique=False, nullable=False)
-    valence = Column(Float, unique=False, nullable=False)
 
     def __repr__(self):
-        return '<Song %r>' % self.title
+        return '<Song %r>' % self.songTitle
 
 
 def create_db(engine_string: str) -> None:
@@ -83,40 +71,25 @@ class SongManager:
         """
         self.session.close()
 
-    def add_song(self, title: str, artist: str, year: int, acousticness: float,
-                  danceability: float, duration_ms: int, energy: float, instrumental: float,
-                  liveness: float, loudness: float, key: int, mode: int, popularity: int,
-                  speechiness: float, tempo: float, valence: float) -> None:
+    def add_song(self, songTitle: str, artist: str, rank: int,
+                 recommendedSong: str, recommendedSongArtist: str, duration_ms: int) -> None:
         """Seeds an existing database with additional songs.
 
         Args:
-            title: str - Title of song
+            songTitle: str - Title of song
             artist: str - Artist
-            year: int - Year of the song published
-            acousticness: float - Acousticness level of the song (Ranges from 0 to 1)
-            danceability: float -Danceability level of the song (Ranges from 0 to 1)
+            rank: int - Rank of the recommended song
+            recommendedSong: str - Title of the recommended song
+            recommendedSongArtist: str - Artist of the recommended song
             duration_ms: int - Duration of the song
-            energy: float - Energy level of the song (Ranges from 0 to 1)
-            instrumental: float - Instrumental level of the song (Ranges from 0 to 1)
-            Liveness: float - Liveness of the song (Ranges from 0 to 1)
-            Loudness: flaot - Loudness level of the song (Float typically ranging from -60 to 0)
-            Key: int - Key of the song (Integer from 0 to 11, starting on C as 0, C# as 1 and so on)
-            Mode: int - Mode of the song (Minor as 0, Major as 1)
-            Popularity: int - Popularity level of the song (Integer ranges from 0 to 100)
-            Speechiness: float - Speechiness of the song (Ranges from 0 to 1)
-            Tempo: float - Tempo of the song (Float typically ranging from 50 to 150)
-            Valence: float - Valence of the song (Ranges from 0 to 1)
 
         Returns:None
 
         """
 
         session = self.session
-        track = Songs(artist=artist, title=title, year=year, acousticness=acousticness,
-                       danceability=danceability, duration_ms=duration_ms, energy=energy,
-                       instrumental=instrumental, liveness=liveness, loudness=loudness,
-                       key=key, mode=mode, popularity=popularity, speechiness=speechiness,
-                       tempo=tempo, valence=valence)
+        track = Songs(songTitle=songTitle, artist=artist, rank=rank, recommendedSong=recommendedSong,
+                      recommendedSongArtist=recommendedSongArtist, duration_ms=duration_ms)
         session.add(track)
         session.commit()
-        logger.info("%s by %s added to database", title, artist)
+        logger.info("%s by %s added to database", songTitle, artist)
