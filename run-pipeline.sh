@@ -10,4 +10,4 @@ python3 run.py preprocess --config=config/pipeline.yaml --input=data/sample/data
 python3 run.py model --config=config/pipeline.yaml --input=data/clean/clean.csv --output=models/KMeansModel.joblib
 
 # Generate recommendations
-#python3 run.py rec --config=config/pipeline.yaml --input=data/clean/clean.csv --output=data/result/recommendations.csv --model=models/KMeansModel.joblib
+python3 run.py rec --config=config/pipeline.yaml --input=data/clean/clean.csv --output=data/result/recommendations.csv --model=models/KMeansModel.joblib
