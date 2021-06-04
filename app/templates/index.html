@@ -2,41 +2,71 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="static/basic.css" rel="stylesheet">
+    <link href="static/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .center_text {
+            text-align:center;
+        }
+
+        .center_img {
+            display: block;
+            margin-left: auto;
+            margin-right:auto;
+            text-align:center;
+            padding: 25px 10px 20px 10px;
+        }
+
+        .instruction {
+            display: block;
+            text-align: center;
+            margin-left: 15%;
+            margin-right: 15%;
+            padding: 10px 10px 10px 10px;
+        }
+
+    </style>
 </head>
 
 <body>
-    <h3>
-         <a href = "{{ url_for('index') }}">Penny Lane Music Recommender</a>
-    </h3>
+    <div class="center_text">
+        <h3><a href = "{{ url_for('index') }}" style="font-size: 70px">Spotify Song Recommender</a></h3>
+    </div>
 
     <hr/>
-    <table>
-         <thead>
-            <tr>
-               <th>Title</th>
-               <th>Artist</th>
-               <th>Album</th>
-            </tr>
-         </thead>
 
-         <tbody>
-            {% for track in tracks %}
-               <tr>
-                   <td>{{ track.title }}</td>
-                   <td>{{ track.artist }}</td>
-                   <td>{{ track.album }}</td>
-               </tr>
-            {% endfor %}
-         </tbody>
-      </table>
-      <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
-      <dl>
-        <input type=text size=15 name=title placeholder="Title">
-        <input type=text size=15 name=artist placeholder="Artist">
-        <input type=text size=15 name=album placeholder="Album">
-        <input type=submit value=Add>
-      </dl>
+    <br>
+    <div class="center_img">
+        <img src="../static/Spotify-Logo-Featured-01.jpeg" alt="Spotify Logo" width=450 height=250>
+    </div>
+
+    <br>
+
+    <div class="instruction">
+        <p style="font-size: 30px">Welcome to the Spotify Song Recommender! Please enter the name and the artist
+        of a song in the text boxes below. We will recommend 10 songs based on your input.</p>
+    </div>
+
+    <form action="/" method = post>
+    <div class="container">
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="one">Song Title : </label>
+                <input type="text" size=15 placeholder="Please Enter The Song Title"
+                       class="form-control" id="Song Title" name="Song Title">
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="two" >Artist : </label>
+                <input type="text" size=15 placeholder="Please Enter The Name of The Artist"
+                       class="form-control" id="Artist" name="Artist">
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <div class="center_text">
+        <input type=submit value="Go!" class="btn btn-primary btn-lg">
+    </div>
     </form>
 
 </body>

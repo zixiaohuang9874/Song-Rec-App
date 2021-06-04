@@ -37,12 +37,24 @@ if __name__ == '__main__':
     sb_ingest = subparsers.add_parser("ingest", description="Add data to database")
     sb_ingest.add_argument("--songTitle", default="Someone Like You", help="Title of song to be added")
     sb_ingest.add_argument("--artist", default="Adele", help="Artist of song to be added")
-    sb_ingest.add_argument("--rank", default=1, help="Rank of the recommended song")
-    sb_ingest.add_argument("--recommendedSong", default="The Christmas Waltz", help="Name of the recommended song")
-    sb_ingest.add_argument("--recommendedSongArtist", default="Doris Day", help="Artist of the recommended song")
-    sb_ingest.add_argument("--duration_ms", default=168333, help="duration of song to be added")
-    sb_ingest.add_argument("--engine_string", default='sqlite:///data/songs.db',
+    sb_ingest.add_argument("--rec1", default="The Christmas Waltz", help="A recommended song")
+    sb_ingest.add_argument("--rec2", default="Un homme et une femme	", help="A recommended song")
+    sb_ingest.add_argument("--rec3", default="Bhagwan Bata Hamne Tera Kya	", help="A recommended song")
+    sb_ingest.add_argument("--rec4", default="童話", help="A recommended song")
+    sb_ingest.add_argument("--rec5", default="Epistrophy", help="A recommended song")
+    sb_ingest.add_argument("--rec6", default="The Gift (feat. Collin Raye & Susan Ashton)", help="A recommended song")
+    sb_ingest.add_argument("--rec7", default="Lost", help="A recommended song")
+    sb_ingest.add_argument("--rec8", default="Desperados Waiting For A Train", help="A recommended song")
+    sb_ingest.add_argument("--rec9", default="In My Youth", help="A recommended song")
+    sb_ingest.add_argument("--rec10", default="Stay", help="A recommended song")
+    sb_ingest.add_argument("--engine_string", default=SQLALCHEMY_DATABASE_URI,
                            help="SQLAlchemy connection URI for database")
+
+    # Sub-parser for ingesting the recommendation csv file
+    sb_ingest_csv = subparsers.add_parser("ingest_csv", description="Add the data of a csv file to database")
+    sb_ingest_csv.add_argument("--engine_string", default=SQLALCHEMY_DATABASE_URI,
+                               help="SQLAlchemy connection URI for database")
+    sb_ingest_csv.add_argument("--input", "-i", default='data/result/recommendations.csv', help='Path to input data')
 
     # Model Pipeline
     # Sub-parser for preprocess the data
@@ -76,8 +88,15 @@ if __name__ == '__main__':
         create_db(args.engine_string)
     elif sp_used == 'ingest':
         sm = SongManager(engine_string=args.engine_string)
-        sm.add_song(args.songTitle, args.artist, args.rank, args.recommendedSong,
-                    args.recommendedSongArtist, args.duration_ms)
+        sm.add_song(args.songTitle, args.artist, args.rec1, args.rec2, args.rec3, args.rec4, args.rec5, args.rec6,
+                    args.rec7, args.rec8, args.rec9, args.rec10)
+        sm.close()
+    elif sp_used == 'ingest_csv':
+        input = pd.read_csv(args.input)
+        logger.info('Input data loaded from %s' % args.input)
+
+        sm = SongManager(engine_string=args.engine_string)
+        sm.ingest_recommendation(input)
         sm.close()
     elif sp_used == 'preprocess':
         with open(args.config, "r") as f:

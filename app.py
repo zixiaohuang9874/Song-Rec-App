@@ -22,46 +22,62 @@ song_manager = SongManager(app)
 
 @app.route('/')
 def index():
-    """Main view that lists songs in the database.
+    """Main view when enters the web app.
 
-    Create view into index page that uses data queried from Song database and
-    inserts it into the msiapp/templates/index.html template.
+    Display the welcome message and prompt the user to enter the information of a song
 
     Returns: rendered html template
 
     """
-
-    try:
-        songs = song_manager.session.query(Songs).limit(app.config["MAX_ROWS_SHOW"]).all()
-        logger.debug("Index page accessed")
-        return render_template('index.html', songs=songs)
-    except:
-        traceback.print_exc()
-        logger.warning("Not able to display songs, error page returned")
-        return render_template('error.html')
+    return render_template('index.html')
 
 
-@app.route('/add', methods=['POST'])
-def add_entry():
-    """View that process a POST with new song input
+@app.route('/', methods=['POST'])
+def get_rec():
+    """View to output the recommendations
 
-    :return: redirect to index page
+    Display the recommendations for the song which the user entered
+
+    Returns: rendered html template
+
     """
+    if request.method == 'POST':
+        songTitle = request.form['Song Title']
+        artist = request.form['Artist']
 
-    try:
-        song_manager.add_song(artist=request.form['artist'], title=request.form['title'],
-                              year=request.form['year'], acousticness=request.form['acousticness'],
-                              danceability=request.form['danceability'], duration_ms=request.form['duraion_ms'],
-                              energy=request.form['energy'], instrumental=request.form['instrumental'],
-                              liveness=request.form['liveness'], loudness=request.form['loudness'],
-                              key=request.form['key'], mode=request.form['mode'], popularity=request.form['popularity'],
-                              speechiness=request.form['speechiness'], tempo=request.form['tempo'],
-                              valence=request.form['valence'])
-        logger.info("New song added: %s by %s", request.form['title'], request.form['artist'])
-        return redirect(url_for('index'))
-    except:
-        logger.warning("Not able to display songs, error page returned")
-        return render_template('error.html')
+        try:
+            query = "SELECT * FROM songs WHERE songTitle = '{}' AND artist = '{}' LIMIT 1".format(songTitle, artist)
+            recommendation = song_manager.session.execute(query).first()
+
+            if recommendation is None:
+                logger.warning("Unable to find the corresponding song.")
+                return render_template('not_found.html')
+
+            recommendation_dict = dict(recommendation)
+
+            # modify the dictionaries
+            recommendation_dict.pop('id')
+
+            user_input = {}
+            user_input['Song'] = recommendation_dict.pop('songTitle')
+            user_input['Artist'] = recommendation_dict.pop('artist')
+
+            for i in range(1, 11):
+                oldKey = "rec" + str(i)
+                newKey = "Recommendation " + str(i)
+                recommendation_dict[newKey] = recommendation_dict.pop(oldKey)
+
+            return render_template('result.html', user_input=user_input, recommendations=recommendation_dict)
+        except:
+            traceback.print_exc()
+            logger.warning("Not able to display songs, error page returned")
+            return render_template('error.html')
+
+
+# @app.route('/result')
+# def show_rec():
+#     recommendations = request.args.get('recommendation_dict')
+#     return render_template('result.html', recommendations)
 
 
 if __name__ == '__main__':

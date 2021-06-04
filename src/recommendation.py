@@ -22,8 +22,9 @@ def recommendation(df, model, column_names=None, k=10):
     numClusters = len(df_cluster['cluster'].unique())
     rec_result = []
 
+    # Note that this for loop might take a long time to run
     for i in range(numClusters):
-        logger.info("Started generating recommendations for cluster %d" % i)
+        logger.debug("Started generating recommendations for cluster %d" % i)
 
         # filter to the corresponding cluster
         df_filter = df_cluster[df_cluster['cluster'] == i].reset_index(drop=True)
@@ -41,24 +42,11 @@ def recommendation(df, model, column_names=None, k=10):
 
         rec_result.append(cluster_final)
 
-        logger.info("Finished generating recommendations for cluster %d" % i)
+        logger.debug("Finished generating recommendations for cluster %d" % i)
 
     # append the result of all clusters together
     df_rec = pd.concat(rec_result, axis=0).reset_index(drop=True)
 
-    # Convert the dataframe from wide to long to include more information for each recommended song
-    df_long = df_rec.melt(id_vars=['name', 'artist'], var_name="Rank", value_name="Recommended Song")
-    df_long['Rank'] = df_long.Rank.str.replace('rec', '').astype(int)
-    df_long = df_long.sort_values(['name', 'artist', 'Rank'], ignore_index=True)
-    df_long.rename(columns={'name': 'Song Title'}, inplace=True)
-
-    # Add the artist and duration information to the recommended songs
-    info = ['name', 'artists', 'duration_ms']
-    df_final_rec = df_long.merge(df[info], how='inner', left_on='Recommended Song', right_on='name')
-    df_final_rec = df_final_rec.drop('name', axis=1).groupby(['Song Title', 'artist', 'Rank']).first().reset_index()
-    df_final_rec.columns = ['Song Title', 'Artist', 'Rank', 'Recommended Song', 'Recommended Song Artist',
-                            'Duration_ms']
-
     logger.info("Finished generating the recommendations")
 
-    return df_final_rec
+    return df_rec

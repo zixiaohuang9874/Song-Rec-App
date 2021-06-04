@@ -95,7 +95,7 @@ or create a new Kaggle account to log into the website. The dataset used for thi
 To use docker in the following data acquisition and database creation steps, you could run the following command to build
 the docker image from the root of the repository. 
 
-`docker build -f Dockerfile -t spotify_data .`
+`docker build -f Dockerfile_data -t spotify_data .`
 
 #### 1.3 Interact with S3
 To begin with, two environment variables, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` need to be ready and setup in
