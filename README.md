@@ -95,7 +95,9 @@ or create a new Kaggle account to log into the website. The dataset used for thi
 To use docker in the following data acquisition and database creation steps, you could run the following command to build
 the docker image from the root of the repository. 
 
-`docker build -f Dockerfile_data -t spotify_data .`
+```
+docker build -f Dockerfile_data -t spotify_data .
+```
 
 #### 1.3 Interact with S3
 To begin with, two environment variables, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` need to be ready and setup in
@@ -108,53 +110,82 @@ the `s3_path`, you might want to specify your own S3 bucket path in order to mak
 The following will upload the file, `data/sample/data.csv` to your bucket, assuming that you have environment variables,
 `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, set in your environment.
 
-`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY spotify_data run.py s3 --upload --local_path={Your_local_path} --s3path={Your_s3_path}`
+```
+docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY spotify_data run.py s3 --upload --local_path={Your_local_path} --s3path={Your_s3_path}
+```
 
 If not using the docker, you can also run the following command:
 
-`python3 run.py s3 --upload --local_path={Your_local_path} --s3_path={Your_s3_path}` 
+```
+python3 run.py s3 --upload --local_path={Your_local_path} --s3_path={Your_s3_path}
+```
 
 ##### 1.3.2 Download data from S3
 The following will download the data file from your bucket, assuming that you have environment variables,
 `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, set in your environment.
 
-`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY spotify_data run.py s3 --download --local_path={Your_local_path} --s3path={Your_s3_path}`
+```
+docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY spotify_data run.py s3 --download --local_path={Your_local_path} --s3path={Your_s3_path}
+```
 
 If not using the docker, you can also run the following command:
 
-`python3 run.py s3 --download --local_path={Your_local_path} --s3_path={Your_s3_path}` 
+```
+python3 run.py s3 --download --local_path={Your_local_path} --s3_path={Your_s3_path}
+``` 
 
 #### 1.4 Local Database Setup
 To create the database in the location configured in `config.py` run: 
 
-`python run.py create_db --engine_string=<engine_string>`
+```
+python run.py create_db --engine_string=<engine_string>
+```
 
 By default, `python run.py create_db` creates a database at `sqlite:///data/songs.db`， if RDS database connection info is not provided. It
 is suggested that the user specifies the `--engine_string` explicitly in the command and not using the default one.
 
 You can also use docker to create the database in a local SQLite repo. The following command will finish the task:
 
-`docker run spotify_data run.py create_db --engine_string=<engine_string>`
+```
+docker run spotify_data run.py create_db --engine_string=<engine_string>
+```
 
 Another way is to set up `SQLALCHEMY_DATABASE_URI` as an environment variable, then run:
 
-`docker run -e SQLALCHEMY_DATABASE_URI spotify_data run.py create_db`
+```
+docker run -e SQLALCHEMY_DATABASE_URI spotify_data run.py create_db
+```
 
-##### 1.4.1 Adding songs 
+##### 1.4.1 Adding a song: 
 To add songs to the database:
 
-`python run.py ingest --engine_string=<engine_string> --songTitle=<SONGTITLE> --artist=<ARTIST> --rank=<RANK>
- --recommendedSong=<RECOMMENDEDSONG> --recommendedSongArtist=<RECOMMENDEDSONGARTIST>  --duration_ms=<DURATION_MS>`
+```
+python run.py ingest 
+    --engine_string=<engine_string> --songTitle=<SONGTITLE> --artist=<ARTIST>
+    --rec1=<REC1> --rec2=<REC2> --rec3=<REC3> --rec4=<REC4> --rec5=<REC5>
+    --rec6=<REC6> --rec7=<REC7> --rec8=<REC8> --rec9=<REC9> --rec10=<REC10>
+```
 
-By default, `python run.py ingest` adds *Someone Like You* by Adele to the SQLite database located in `sqlite:///data/songs.db`.
+By default, `python run.py ingest` adds the recommendation of *Someone Like You* by Adele to the SQLite database located in `sqlite:///data/songs.db`.
 
-##### 1.4.2 Defining your engine string 
+##### 1.4.2 Adding songs/predictions from a .csv file
+To add the recommendation of songs from a .csv file:
+
+```
+python run.py ingest_csv --engine_string=<engine_string> --input<input_csv_path> 
+```
+
+By default, the path of the input csv is `data/result/recommendation.csv`.
+
+##### 1.4.3 Defining your engine string 
 A SQLAlchemy database connection is defined by a string with the following format:
 
-`dialect+driver://username:password@host:port/database`
+```
+dialect+driver://username:password@host:port/database
+```
 
 The `+dialect` is optional and if not provided, a default is used. For a more detailed description of what `dialect` and `driver` are and how a connection is made, you can see the documentation [here](https://docs.sqlalchemy.org/en/13/core/engines.html). We will cover SQLAlchemy and connection strings in the SQLAlchemy lab session on 
-##### 1.4.3 Local SQLite database 
+##### 1.4.4 Local SQLite database 
 
 A local SQLite database can be created for development and local testing. It does not require a username or password and replaces the host and port with the path to the database file: 
 
@@ -208,7 +239,7 @@ docker run -it \
     -e MYSQL_HOST \
     -e MYSQL_PORT \
     -e DATABASE_NAME \
-    spotify_data run.py create_db --engine_string={YOUR_ENGINE_STRING}
+    spotify_data run.py create_db --engine_string=<engine_string>
 ```
 
 ##### 1.5.3 Adding songs
@@ -220,9 +251,88 @@ docker run -it \
     -e MYSQL_HOST \
     -e MYSQL_PORT \
     -e DATABASE_NAME \
-    spotify_data run.py ingest --engine_string={YOUR_ENGINE_STRING} --songTitle=<SONGTITLE> --artist=<ARTIST> --rank=<RANK>
+    spotify_data run.py ingest --engine_string=<engine_string> --songTitle=<SONGTITLE> --artist=<ARTIST> --rank=<RANK>
     --recommendedSong=<RECOMMENDEDSONG> --recommendedSongArtist=<RECOMMENDEDSONGARTIST>  --duration_ms=<DURATION_MS>
 ```
 
+##### 1.5.4 Adding songs/predictions from a .csv file
+The following command would add the predictions of songs in a .csv file to the database.
+```
+docker run -it \
+    -e MYSQL_USER \
+    -e MYSQL_PASSWORD \
+    -e MYSQL_HOST \
+    -e MYSQL_PORT \
+    -e DATABASE_NAME \
+    spotify_data run.py ingest_csv --engine_string=<engine_string> --input=<input_csv_path>
+```
+
+### 2. Running the Model Pipeline
+
+#### 2.1 Build a docker image
+```
+docker build -f Dockerfile_model -t pipeline .
+```
+
+#### 2.2 Running the Pipeline
+When not using the docker image, the following command will run the whole model pipeline from the beginning to the end, 
+including downloading the data, preprocessing the data, building the model and evaluating the model.
+
+```
+run-pipeline.sh
+```
+
+When using the docker image, using the following command:
+```
+docker run --mount type=bind,source="$(pwd)",target=/app pipeline -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY run-pipeline.sh
+```
+Note that you need to set up `AWS_ACCESS_KEY` amd `AWS_SECRET_ACCESS_KEY` to run the above command. 
 
  
+### 3. Run the Flask app
+#### 3.1 Configure Flask app
+`config/flaskconfig.py` holds the configurations for the Flask app. It includes the following configurations:
+```python
+DEBUG = True  # Keep True for debugging, change to False when moving to production 
+LOGGING_CONFIG = "config/logging/local.conf"  # Path to file that configures Python logger
+HOST = "0.0.0.0" # the host that is running the app. 0.0.0.0 when running locally 
+PORT = 5000  # What port to expose app on. Must be the same as the port exposed in app/Dockerfile 
+SQLALCHEMY_DATABASE_URI = 'sqlite:///data/tracks.db'  # URI (engine string) for database that contains tracks
+APP_NAME = "douban-rs"
+SQLALCHEMY_TRACK_MODIFICATIONS = True 
+SQLALCHEMY_ECHO = False  # If true, SQL for queries made will be printed
+MAX_ROWS_SHOW = 100 # Limits the number of rows returned from the database 
+```
+
+#### 3.2 Run the Flask app Locally
+To run the Flask app locally, run:
+```
+python app.py
+```
+You should now be able to access the app at http://0.0.0.0:5000/ in your browser.
+
+#### 3.3 Run the Flask app Using Docker
+##### 3.3.1 Build the Image
+The Dockerfile for running the flask app is in the `app/` folder. To build the image, run from this directory (the root of the repo):
+```
+docker build -f app/Dockerfile_app -t web_app .
+```
+
+This command builds the Docker image, with the tag `web_app`, based on the instructions in `app/Dockerfile_app` and the files existing in this directory.
+
+##### 3.3.2 Run the Container
+To run the app, run from this directory:
+```
+docker run -p 5000:5000 --name test web_app
+```
+You should now be able to access the app at http://0.0.0.0:5000/ in your browser. \
+This command runs the `web_app` image as a container named test and forwards the port 5000 from container to your laptop
+ so that you can access the flask app exposed through that port. \
+If PORT in ```config/flaskconfig.py``` is changed, this port should be changed accordingly (as should the ```EXPOSE 5000``` line in ```app/Dockerfile_app```)
+
+##### 3.3.3 Kill the container
+Once finished with the app, you will need to kill the container. To do so:
+```
+docker kill test
+```
+where `test` is the name given in the `docker run` command.
