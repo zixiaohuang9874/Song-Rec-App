@@ -43,7 +43,7 @@ For business purpose, an important metric is definitely the number of users who 
 
 ```
 ├── README.md                         <- You are here
-├── api
+├── app
 │   ├── static/                       <- CSS, JS files that remain static
 │   ├── templates/                    <- HTML (or other code) that is templated and changes based on a set of inputs
 │   ├── boot.sh                       <- Start up script for launching app in Docker container.
@@ -85,6 +85,7 @@ For business purpose, an important metric is definitely the number of users who 
 ├── Dockerfile_data                   <- Dockerfile for acquiring the data, downloading the data and interacting with the RDS instance
 ├── Dockerfile_pipeline               <- Dockerfile for running the model pipeline
 ├── run-pipeline.sh                   <- Shell file for running the pipeline in a single command
+├── run-tests.sh                      <- Shell file for running the tests
 ```
 
 ## Running the app
@@ -340,3 +341,19 @@ Once finished with the app, you will need to kill the container. To do so:
 docker kill test
 ```
 where `test` is the name given in the `docker run` command.
+
+### 4. Testing
+From within the Docker container, the following command should work to run unit tests when run from the root of the repository:
+```
+python -m pytest
+```
+
+Using Docker, run the following, if the image has not been built yet:
+```
+docker build -f Dockerfile_pipeline -t pipeline .
+```
+
+To run the tests, run:
+```
+docker run pipeline run-tests.sh
+```
