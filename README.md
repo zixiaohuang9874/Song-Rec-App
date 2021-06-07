@@ -277,7 +277,7 @@ docker run -it \
 
 #### 2.1 Build a docker image
 ```
-docker build -f Dockerfile_model -t pipeline .
+docker build -f Dockerfile_pipeline -t pipeline .
 ```
 
 #### 2.2 Running the Pipeline

@@ -3,6 +3,7 @@ import logging.config
 logging.config.fileConfig('config/logging/local.conf')
 logger = logging.getLogger('spotify-rs-pipeline')
 
+import json
 import yaml
 import joblib
 import pandas as pd
@@ -67,6 +68,7 @@ if __name__ == '__main__':
     sb_preprocess = subparsers.add_parser('model', description='Develop the model')
     sb_preprocess.add_argument('--input', '-i', default='data/clean/clean.csv', help='Path to input data')
     sb_preprocess.add_argument('--output', '-o', default='models/KMeansModel.joblib', help='Path to output model')
+    sb_preprocess.add_argument('--metrics', '-m', default='models/metrics.json', help='Path to store metrics')
     sb_preprocess.add_argument('--config', default='config/pipeline.yaml', help='Path to configuration file')
 
     # Sub-parser for generate the recommendations
@@ -119,9 +121,15 @@ if __name__ == '__main__':
         input = pd.read_csv(args.input)
         logger.info('Input data loaded from %s' % args.input)
 
-        output = model.model(input, **config['model']['model'])
-        joblib.dump(output, args.output)
+        model, metrics = model.model(input, config['model'])
+        joblib.dump(model, args.output)
         logger.info('Output model saved to %s' % args.output)
+
+        with open(args.metrics, 'w') as fp:
+            json.dump(metrics, fp)
+
+        logger.info('Evaluation of the model saved to %s' % args.metrics)
+
     elif sp_used == 'rec':
         with open(args.config, "r") as f:
             config = yaml.load(f, Loader=yaml.FullLoader)

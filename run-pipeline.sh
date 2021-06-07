@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Download data from s3 bucket
-# python3 run.py s3 --download
+python3 run.py s3 --download
 
 # Preprocess the data
 python3 run.py preprocess --config=config/pipeline.yaml --input=data/sample/data.csv --output=data/clean/clean.csv
