@@ -42,7 +42,7 @@ def create_db(engine_string: str) -> None:
     """Create database from provided engine string
 
     Args:
-        engine_string: str - Engine string
+        engine_string (str): Engine string
 
     Returns: None
 
@@ -58,8 +58,8 @@ class SongManager:
     def __init__(self, app=None, engine_string=None):
         """
         Args:
-            app: Flask - Flask app
-            engine_string: str - Engine string
+            app (Flask): Flask app
+            engine_string (str): Engine string
         """
         if app:
             self.db = SQLAlchemy(app)
@@ -84,9 +84,9 @@ class SongManager:
         """Seeds an existing database with additional songs.
 
         Args:
-            songTitle: str - Title of song
-            artist: str - Artist
-            rec1-rec10: str - Recommended songs
+            songTitle (str): Title of song
+            artist (str): Artist
+            rec1-rec10 (str): Recommended songs
 
         Returns:None
 
@@ -103,7 +103,7 @@ class SongManager:
         """Ingest a dataframe to the database
 
         Args:
-            df: pandas dataframe - dataframe with recommendations
+            df (pandas dataframe): dataframe with recommendations
 
         """
 

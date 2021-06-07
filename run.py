@@ -121,7 +121,7 @@ if __name__ == '__main__':
         input = pd.read_csv(args.input)
         logger.info('Input data loaded from %s' % args.input)
 
-        model, metrics = model.model(input, config['model'])
+        model, metrics = model.model(input, config['model'], **config['model']['model'])
         joblib.dump(model, args.output)
         logger.info('Output model saved to %s' % args.output)
 

@@ -74,11 +74,5 @@ def get_rec():
             return render_template('error.html')
 
 
-# @app.route('/result')
-# def show_rec():
-#     recommendations = request.args.get('recommendation_dict')
-#     return render_template('result.html', recommendations)
-
-
 if __name__ == '__main__':
     app.run(debug=app.config["DEBUG"], port=app.config["PORT"], host=app.config["HOST"])

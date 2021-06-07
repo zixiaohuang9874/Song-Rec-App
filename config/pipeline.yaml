@@ -5,14 +5,12 @@ preprocess:
         columns_to_standardize: [acousticness, danceability, energy, instrumentalness, liveness,
             loudness, speechiness, tempo, valence]
 model:
-    build_model:
+    model:
         features: [acousticness, danceability, energy, instrumentalness, liveness,
             loudness, speechiness, tempo, valence]
+    build_model:
         numClusters: 8
         seed: 10
-    evaluate_model:
-        features: [ acousticness, danceability, energy, instrumentalness, liveness,
-            loudness, speechiness, tempo, valence ]
 recommendation:
     recommendation:
         column_names: [acousticness, danceability, energy, instrumentalness, liveness,

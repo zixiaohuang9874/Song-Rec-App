@@ -7,7 +7,20 @@ from sklearn.metrics import pairwise_distances
 
 logger = logging.getLogger(__name__)
 
+
 def recommendation(df, model, column_names=None, k=10):
+    """The function generates the recommendation of each song based on the K-Means model passed in
+
+    Args:
+        df (pandas dataframe): dataframe to be used to generate the recommendations
+        model (sklearn.cluster._kmeans.KMeans): K-Means model to be used to generate the recommendations
+        column_names (list): list of features to be extracted from the dataframe
+        k (int): number of recommendations
+
+    Return:
+        df_rec (pandas dataframe): dataframe with the recommendations
+
+    """
 
     if column_names is None:
         column_names = ['acousticness', 'danceability', 'energy', 'instrumentalness', 'liveness',
@@ -31,8 +44,8 @@ def recommendation(df, model, column_names=None, k=10):
 
         # find the k points which are closet to a song
         dist_mat = pairwise_distances(df_filter[column_names])
-        dist_mat[dist_mat == 0] = np.nan
-        neighbors = np.argsort(dist_mat)[:, :k]
+        dist_mat[dist_mat == 0] = np.nan # drop the points with zero distance
+        neighbors = np.argsort(dist_mat)[:, :k] # sort based on the pairwise distance
 
         name = df_filter['name'].to_dict()
         closet_neighbors_info = np.vectorize(name.get)(neighbors)

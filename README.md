@@ -63,8 +63,6 @@ For business purpose, an important metric is definitely the number of users who 
 │
 ├── deliverables/                     <- Any white papers, presentations, final work products that are presented or delivered to a stakeholder 
 │
-├── docs/                             <- Sphinx documentation based on Python docstrings. Optional for this project. 
-│
 ├── figures/                          <- Generated graphics and figures to be used in reporting, documentation, etc
 │
 ├── models/                           <- Trained model objects (TMOs), model predictions, and/or model summaries
@@ -290,7 +288,7 @@ run-pipeline.sh
 
 When using the docker image, using the following command:
 ```
-docker run --mount type=bind,source="$(pwd)",target=/app pipeline -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY run-pipeline.sh
+docker run --mount type=bind,source="$(pwd)",target=/app -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY pipeline run-pipeline.sh
 ```
 Note that you need to set up `AWS_ACCESS_KEY` amd `AWS_SECRET_ACCESS_KEY` to run the above command. 
 
