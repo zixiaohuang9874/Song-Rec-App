@@ -86,7 +86,16 @@ class SongManager:
         Args:
             songTitle (str): Title of song
             artist (str): Artist
-            rec1-rec10 (str): Recommended songs
+            rec1 (str): Recommended song 1
+            rec2 (str): Recommended song 2
+            rec3 (str): Recommended song 3
+            rec4 (str): Recommended song 4
+            rec5 (str): Recommended song 5
+            rec6 (str): Recommended song 6
+            rec7 (str): Recommended song 7
+            rec8 (str): Recommended song 8
+            rec9 (str): Recommended song 9
+            rec10 (str): Recommended song 10
 
         Returns:None
 

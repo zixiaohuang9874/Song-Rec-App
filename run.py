@@ -1,18 +1,20 @@
 import argparse
 import logging.config
-logging.config.fileConfig('config/logging/local.conf')
-logger = logging.getLogger('spotify-rs-pipeline')
 
 import json
 import yaml
 import joblib
 import pandas as pd
 
+logging.config.fileConfig('config/logging/local.conf')
+logger = logging.getLogger('spotify-rs-pipeline')
+
 from src.add_songs import SongManager, create_db
 from src.s3 import upload_file_to_s3, download_file_from_s3
 import src.preprocess as preprocess
 import src.model as model
 import src.recommendation as recommendation
+import test.test_preprocess as test
 from config.flaskconfig import SQLALCHEMY_DATABASE_URI
 
 if __name__ == '__main__':
@@ -79,6 +81,9 @@ if __name__ == '__main__':
                                help='Path to output recommendations')
     sb_preprocess.add_argument('--config', default='config/pipeline.yaml', help='Path to configuration file')
 
+    # Sub-parser for running tests
+    sb_test = subparsers.add_parser('test', description='Run the unit tests')
+
     args = parser.parse_args()
     sp_used = args.subparser_name
     if sp_used == 's3':
@@ -107,7 +112,7 @@ if __name__ == '__main__':
         logger.info("Configuration file loaded from %s" % args.config)
 
         input = pd.read_csv(args.input)
-        logger.info('Input data loaded from %s'% args.input)
+        logger.info('Input data loaded from %s' % args.input)
 
         output = preprocess.preprocess(input, config['preprocess'])
         output.to_csv(args.output, index=False)
@@ -145,8 +150,7 @@ if __name__ == '__main__':
         output = recommendation.recommendation(input, model, **config['recommendation']['recommendation'])
         output.to_csv(args.output, index=False)
         logger.info("Recommendations saved to %s" % args.output)
+    elif sp_used == 'test':
+        test.run_tests()
     else:
         parser.print_help()
-
-
-
