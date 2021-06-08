@@ -350,10 +350,10 @@ python -m pytest
 
 Using Docker, run the following, if the image has not been built yet:
 ```
-docker build -f Dockerfile_pipeline -t pipeline .
+docker build -f Dockerfile_data -t spotify_data .
 ```
 
 To run the tests, run:
 ```
-docker run pipeline run-tests.sh
+docker run spotify_data -m pytest
 ```
