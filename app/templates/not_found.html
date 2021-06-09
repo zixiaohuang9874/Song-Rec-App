@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="static/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="center_text">
+        <h3><a href = "{{ url_for('index') }}" style="font-size: 70px">Spotify Song Recommender</a></h3>
+    </div>
+
+    <hr/>
+
+    <p>
+        Cannot find the song in the database. Please return to the main page and search again.
+    </p>
+
+    <a href = "{{ url_for('index') }}"><b>Click here to return</b></a>
+
+</body>
+</html>

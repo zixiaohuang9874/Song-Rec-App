@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="static/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .center_text {
+            text-align:center;
+        }
+
+        table{
+            border: 1px solid black;
+            width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="center_text">
+        <h3><a href = "{{ url_for('index') }}" style="font-size: 70px">Spotify Song Recommender</a></h3>
+    </div>
+
+    <hr/>
+
+    <div class="center_text">
+    <b style="font-size: 20px">Your Inputs:</b>
+
+    <table style="width: auto;" class="table table-bordered table-hover table-dark center">
+        <thead>
+            <tr>
+                <th scope="col">Field</th>
+                <th scope="col">Info</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for key, value in user_input.items() %}
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+    </table>
+    <div class="center_text">
+
+    <b style="font-size: 20px">Your Recommended Songs:</b>
+
+    <table style="width: auto;" class="table table-bordered table-hover table-dark center">
+        <thead>
+            <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Song Title</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for key, value in recommendations.items() %}
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+    </table>
+
+    <b>
+         <a href = "{{ url_for('index') }}">Click here to return</a>
+    </b>
+
+</body>
+</html>

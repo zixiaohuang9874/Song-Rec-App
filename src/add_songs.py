@@ -1,12 +1,11 @@
-import os
-import logging.config
+import logging
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 import sqlalchemy
+from sqlalchemy import exc
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Float, MetaData
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
 
@@ -21,32 +20,30 @@ class Songs(Base):
     __tablename__ = 'songs'
 
     id = Column(Integer, primary_key=True)
-    title = Column(String(100), unique=False, nullable=False)
+    songTitle = Column(String(100), unique=False, nullable=False)
     artist = Column(String(100), unique=False, nullable=False)
-    year = Column(Integer, unique=False, nullable=False)
-    acousticness = Column(Float, unique=False, nullable=False)
-    danceability = Column(Float, unique=False, nullable=False)
-    duration_ms = Column(Integer, unique=False, nullable=False)
-    energy = Column(Float, unique=False, nullable=False)
-    instrumental = Column(Float, unique=False, nullable=False)
-    liveness = Column(Float, unique=False, nullable=False)
-    loudness = Column(Float, unique=False, nullable=False)
-    key = Column(Integer, unique=False, nullable=False)
-    mode = Column(Integer, unique=False, nullable=False)
-    popularity = Column(Integer, unique=False, nullable=False)
-    speechiness = Column(Float, unique=False, nullable=False)
-    tempo = Column(Float, unique=False, nullable=False)
-    valence = Column(Float, unique=False, nullable=False)
+    rec1 = Column(String(100), unique=False, nullable=False)
+    rec2 = Column(String(100), unique=False, nullable=False)
+    rec3 = Column(String(100), unique=False, nullable=False)
+    rec4 = Column(String(100), unique=False, nullable=False)
+    rec5 = Column(String(100), unique=False, nullable=False)
+    rec6 = Column(String(100), unique=False, nullable=False)
+    rec7 = Column(String(100), unique=False, nullable=False)
+    rec8 = Column(String(100), unique=False, nullable=False)
+    rec9 = Column(String(100), unique=False, nullable=False)
+    rec10 = Column(String(100), unique=False, nullable=False)
+
+
 
     def __repr__(self):
-        return '<Song %r>' % self.title
+        return '<Song %r>' % self.songTitle
 
 
 def create_db(engine_string: str) -> None:
     """Create database from provided engine string
 
     Args:
-        engine_string: str - Engine string
+        engine_string (str): Engine string
 
     Returns: None
 
@@ -62,8 +59,8 @@ class SongManager:
     def __init__(self, app=None, engine_string=None):
         """
         Args:
-            app: Flask - Flask app
-            engine_string: str - Engine string
+            app (Flask): Flask app
+            engine_string (str): Engine string
         """
         if app:
             self.db = SQLAlchemy(app)
@@ -83,40 +80,74 @@ class SongManager:
         """
         self.session.close()
 
-    def add_song(self, title: str, artist: str, year: int, acousticness: float,
-                  danceability: float, duration_ms: int, energy: float, instrumental: float,
-                  liveness: float, loudness: float, key: int, mode: int, popularity: int,
-                  speechiness: float, tempo: float, valence: float) -> None:
+    def add_song(self, song_title: str, artist: str, rec1: str, rec2: str, rec3:str,
+                 rec4: str, rec5: str, rec6:str, rec7: str, rec8: str, rec9:str, rec10:str) -> None:
         """Seeds an existing database with additional songs.
 
         Args:
-            title: str - Title of song
-            artist: str - Artist
-            year: int - Year of the song published
-            acousticness: float - Acousticness level of the song (Ranges from 0 to 1)
-            danceability: float -Danceability level of the song (Ranges from 0 to 1)
-            duration_ms: int - Duration of the song
-            energy: float - Energy level of the song (Ranges from 0 to 1)
-            instrumental: float - Instrumental level of the song (Ranges from 0 to 1)
-            Liveness: float - Liveness of the song (Ranges from 0 to 1)
-            Loudness: flaot - Loudness level of the song (Float typically ranging from -60 to 0)
-            Key: int - Key of the song (Integer from 0 to 11, starting on C as 0, C# as 1 and so on)
-            Mode: int - Mode of the song (Minor as 0, Major as 1)
-            Popularity: int - Popularity level of the song (Integer ranges from 0 to 100)
-            Speechiness: float - Speechiness of the song (Ranges from 0 to 1)
-            Tempo: float - Tempo of the song (Float typically ranging from 50 to 150)
-            Valence: float - Valence of the song (Ranges from 0 to 1)
+            song_title (str): Title of song
+            artist (str): Artist
+            rec1 (str): Recommended song 1
+            rec2 (str): Recommended song 2
+            rec3 (str): Recommended song 3
+            rec4 (str): Recommended song 4
+            rec5 (str): Recommended song 5
+            rec6 (str): Recommended song 6
+            rec7 (str): Recommended song 7
+            rec8 (str): Recommended song 8
+            rec9 (str): Recommended song 9
+            rec10 (str): Recommended song 10
 
         Returns:None
 
         """
 
-        session = self.session
-        track = Songs(artist=artist, title=title, year=year, acousticness=acousticness,
-                       danceability=danceability, duration_ms=duration_ms, energy=energy,
-                       instrumental=instrumental, liveness=liveness, loudness=loudness,
-                       key=key, mode=mode, popularity=popularity, speechiness=speechiness,
-                       tempo=tempo, valence=valence)
-        session.add(track)
-        session.commit()
-        logger.info("%s by %s added to database", title, artist)
+        try:
+            session = self.session
+            track = Songs(songTitle=song_title, artist=artist, rec1=rec1, rec2=rec2, rec3=rec3,
+                      rec4=rec4, rec5=rec5, rec6=rec6, rec7=rec7, rec8=rec8, rec9=rec9, rec10=rec10)
+            session.add(track)
+            session.commit()
+            logger.info("%s by %s added to database", song_title, artist)
+        except exc.SQLAlchemyError:
+            logger.error("Unable to ingest the song")
+
+
+    def ingest_recommendation(self, df):
+        """Ingest a dataframe to the database
+
+        Args:
+            df (pandas dataframe): dataframe with recommendations
+
+        """
+        try:
+            session = self.session
+            count = 0
+            for i in range(len(df)):
+                record = {'songTitle': df.iloc[i,0],
+                      'artist': df.iloc[i,1],
+                      'rec1': df.iloc[i,2],
+                      'rec2': df.iloc[i,3],
+                      'rec3': df.iloc[i,4],
+                      'rec4': df.iloc[i,5],
+                      'rec5': df.iloc[i,6],
+                      'rec6': df.iloc[i,7],
+                      'rec7': df.iloc[i,8],
+                      'rec8': df.iloc[i,9],
+                      'rec9': df.iloc[i,10],
+                      'rec10': df.iloc[i,11]
+                      }
+
+                record = Songs(**record)
+                session.add(record)
+                count += 1
+
+                session.commit()
+                logger.debug("Ingested recommendation %d" % i)
+
+            session.commit()
+            logger.info("A total of %d recommendations have been added to the database" % count)
+
+            session.close()
+        except exc.SQLAlchemyError:
+            logger.error("Unable to ingest the dataset")

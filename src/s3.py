@@ -1,23 +1,10 @@
-import argparse
 import logging
 import re
 
-import pandas as pd
 import boto3
 import botocore
 
-logging.basicConfig(format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s', level=logging.DEBUG)
-logging.getLogger("botocore").setLevel(logging.ERROR)
-logging.getLogger("s3transfer").setLevel(logging.ERROR)
-logging.getLogger("urllib3").setLevel(logging.ERROR)
-logging.getLogger("boto3").setLevel(logging.ERROR)
-logging.getLogger("asyncio").setLevel(logging.ERROR)
-logging.getLogger("aiobotocore").setLevel(logging.ERROR)
-logging.getLogger("s3fs").setLevel(logging.ERROR)
-
-
-logger = logging.getLogger('s3')
-
+logger = logging.getLogger(__name__)
 
 def parse_s3(s3path):
     """
@@ -83,23 +70,3 @@ def download_file_from_s3(local_path, s3path):
     else:
         logger.info('Data downloaded from %s to %s', s3path, local_path)
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--download', default=False, action='store_true',
-                        help="If used, will downlaod from S3. ")
-    parser.add_argument('--upload', default=False, action='store_true',
-                        help="If used, will upload to S3. ")
-    parser.add_argument('--s3path', default='s3://2021-msia423-huang-zixiao/raw/data.csv',
-                        help="If used, will load data via pandas")
-    parser.add_argument('--local_path', default='data/sample/data.csv',
-                        help="Where to load data to in S3")
-
-    args = parser.parse_args()
-
-
-    if args.download:
-        download_file_from_s3(args.local_path, args.s3path)
-    elif args.upload:
-        upload_file_to_s3(args.local_path, args.s3path)
-    else:
-        parser.print_help()
