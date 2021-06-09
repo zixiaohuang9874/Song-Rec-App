@@ -3,6 +3,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import sqlalchemy
+from sqlalchemy import exc
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import sessionmaker
@@ -79,12 +80,12 @@ class SongManager:
         """
         self.session.close()
 
-    def add_song(self, songTitle: str, artist: str, rec1: str, rec2: str, rec3:str,
+    def add_song(self, song_title: str, artist: str, rec1: str, rec2: str, rec3:str,
                  rec4: str, rec5: str, rec6:str, rec7: str, rec8: str, rec9:str, rec10:str) -> None:
         """Seeds an existing database with additional songs.
 
         Args:
-            songTitle (str): Title of song
+            song_title (str): Title of song
             artist (str): Artist
             rec1 (str): Recommended song 1
             rec2 (str): Recommended song 2
@@ -101,12 +102,16 @@ class SongManager:
 
         """
 
-        session = self.session
-        track = Songs(songTitle=songTitle, artist=artist, rec1=rec1, rec2=rec2, rec3=rec3,
+        try:
+            session = self.session
+            track = Songs(songTitle=song_title, artist=artist, rec1=rec1, rec2=rec2, rec3=rec3,
                       rec4=rec4, rec5=rec5, rec6=rec6, rec7=rec7, rec8=rec8, rec9=rec9, rec10=rec10)
-        session.add(track)
-        session.commit()
-        logger.info("%s by %s added to database", songTitle, artist)
+            session.add(track)
+            session.commit()
+            logger.info("%s by %s added to database", song_title, artist)
+        except exc.SQLAlchemyError:
+            logger.error("Unable to ingest the song")
+
 
     def ingest_recommendation(self, df):
         """Ingest a dataframe to the database
@@ -115,11 +120,11 @@ class SongManager:
             df (pandas dataframe): dataframe with recommendations
 
         """
-
-        session = self.session
-        count = 0
-        for i in range(len(df)):
-            record = {'songTitle': df.iloc[i,0],
+        try:
+            session = self.session
+            count = 0
+            for i in range(len(df)):
+                record = {'songTitle': df.iloc[i,0],
                       'artist': df.iloc[i,1],
                       'rec1': df.iloc[i,2],
                       'rec2': df.iloc[i,3],
@@ -133,14 +138,16 @@ class SongManager:
                       'rec10': df.iloc[i,11]
                       }
 
-            record = Songs(**record)
-            session.add(record)
-            count += 1
+                record = Songs(**record)
+                session.add(record)
+                count += 1
+
+                session.commit()
+                logger.debug("Ingested recommendation %d" % i)
 
             session.commit()
-            logger.debug("Ingested recommendation %d" % i)
+            logger.info("A total of %d recommendations have been added to the database" % count)
 
-        session.commit()
-        logger.info("A total of %d recommendations have been added to the database" % count)
-
-        session.close()
+            session.close()
+        except exc.SQLAlchemyError:
+            logger.error("Unable to ingest the dataset")

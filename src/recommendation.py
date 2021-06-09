@@ -7,6 +7,18 @@ from sklearn.metrics import pairwise_distances
 
 logger = logging.getLogger(__name__)
 
+def find_closet(df, k):
+    """This function finds the 10 closet points to the song in the cluster.
+    Args:
+        df (pandas dataframe): dataframe of a cluster
+        k (int): number of neighbors to be found
+
+    """
+    dist_mat = pairwise_distances(df)
+    dist_mat[dist_mat == 0] = np.nan  # drop the points with zero distance
+    neighbors = np.argsort(dist_mat)[:, :k]  # sort based on the pairwise distance
+
+    return neighbors
 
 def recommendation(df, model, column_names=None, k=10):
     """The function generates the recommendation of each song based on the K-Means model passed in
@@ -36,6 +48,8 @@ def recommendation(df, model, column_names=None, k=10):
     rec_result = []
 
     # Note that this for loop might take a long time to run
+    logger.info("Started generating recommendations. This might take a while")
+    logger.warning("If using docker and the process is killed, please increase the size of the memory")
     for i in range(numClusters):
         logger.debug("Started generating recommendations for cluster %d" % i)
 
@@ -43,9 +57,7 @@ def recommendation(df, model, column_names=None, k=10):
         df_filter = df_cluster[df_cluster['cluster'] == i].reset_index(drop=True)
 
         # find the k points which are closet to a song
-        dist_mat = pairwise_distances(df_filter[column_names])
-        dist_mat[dist_mat == 0] = np.nan # drop the points with zero distance
-        neighbors = np.argsort(dist_mat)[:, :k] # sort based on the pairwise distance
+        neighbors = find_closet(df_filter[column_names], k)
 
         name = df_filter['name'].to_dict()
         closet_neighbors_info = np.vectorize(name.get)(neighbors)

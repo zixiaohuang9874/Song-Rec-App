@@ -4,7 +4,7 @@
 python3 run.py s3 --download
 
 # Preprocess the data
-python3 run.py preprocess --config=config/pipeline.yaml --input=data/sample/data.csv --output=data/clean/clean.csv
+python3 run.py preprocess --config=config/pipeline.yaml --input=data/sample/sample.csv --output=data/clean/clean.csv
 
 # Build the model
 python3 run.py model --config=config/pipeline.yaml --input=data/clean/clean.csv --output=models/KMeansModel.joblib

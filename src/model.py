@@ -19,10 +19,15 @@ def evaluate_model(df, model):
 
     """
 
-    logger.info("Started evaluating the model")
+    logger.info("Started evaluating the model. This might take a while as it is difficult to calculate "
+                "the silhouette score")
+    logger.warning("If using docker and the process is killed, please increase the size of the memory")
 
     # Calculate the inertia and silhouette score
+    logger.debug("Calculating the inertia")
     inertia = model.inertia_
+
+    logger.debug("Calculating the silhouette score")
     silhouette = silhouette_score(df, model.labels_)
 
     logger.info('inertia: %f' % inertia)
@@ -53,7 +58,7 @@ def build_model(df, numClusters=8, seed=10):
     logger.info("Started building the model")
 
     model = KMeans(n_clusters=numClusters, random_state=seed).fit(df)
-    logger.info("Finished developping the model")
+    logger.info("Finished developing the model")
 
     return model
 
@@ -74,7 +79,7 @@ def model(df, config, features=None):
 
     if features is None:
         features = ['acousticness', 'danceability', 'energy', 'instrumentalness', 'liveness',
-                'loudness', 'speechiness', 'tempo', 'valence']
+                    'loudness', 'speechiness', 'tempo', 'valence']
 
     df_new = df[features]
 
