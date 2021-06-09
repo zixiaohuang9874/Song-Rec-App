@@ -108,6 +108,7 @@ if __name__ == '__main__':
             sm.close()
         except IOError:
             logger.error("Failed to find the input file")
+            sys.exit(1)
     elif sp_used == 'preprocess':
         try:
             with open(args.config, "r") as f:
