@@ -1,4 +1,4 @@
-# MSiA 423 Spotify Song Recommender System
+# Spotify Song Recommender System
 
 Project Creator and Developer: Zixiao Huang\
 (QA contributions: Lanqi Fei)
